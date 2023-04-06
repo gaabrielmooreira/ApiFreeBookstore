@@ -35,43 +35,82 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import errorsCategory from "../errors/index.js";
-import jwt from "jsonwebtoken";
-import dotenv from 'dotenv';
-import userRepositories from "../repositories/userRepositories.js";
-dotenv.config();
-export function authValidate(req, _res, next) {
+import bookRepositories from "../repositories/bookRepositories.js";
+function create(_a) {
+    var name = _a.name, author = _a.author, userId = _a.userId;
     return __awaiter(this, void 0, void 0, function () {
-        var authHeader, parts, schema, token, userId, rowCount, err_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    authHeader = req.headers.authorization;
-                    if (!authHeader)
-                        throw errorsCategory.unauthorizedError();
-                    parts = authHeader.split(" ");
-                    if (parts.length !== 2)
-                        throw errorsCategory.unauthorizedError();
-                    schema = parts[0], token = parts[1];
-                    if (schema !== 'Bearer')
-                        throw errorsCategory.unauthorizedError();
-                    _a.label = 1;
+        var rowCount;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, bookRepositories.findByName({ name: name })];
                 case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    userId = jwt.verify(token, process.env.SECRET_KEY).userId;
-                    return [4 /*yield*/, userRepositories.findById({ id: userId })];
+                    rowCount = (_b.sent()).rowCount;
+                    if (rowCount)
+                        throw errorsCategory.conflictError("Book already exists");
+                    return [4 /*yield*/, bookRepositories.create({ name: name, author: author, userId: userId })];
                 case 2:
-                    rowCount = (_a.sent()).rowCount;
-                    if (!rowCount)
-                        throw errorsCategory.unauthorizedError();
-                    req.userId = userId;
-                    next();
-                    return [3 /*break*/, 4];
-                case 3:
-                    err_1 = _a.sent();
-                    next(err_1);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+                    _b.sent();
+                    return [2 /*return*/];
             }
         });
     });
 }
+function findAll() {
+    return __awaiter(this, void 0, void 0, function () {
+        var books;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, bookRepositories.findAll()];
+                case 1:
+                    books = _a.sent();
+                    if (!books.rowCount)
+                        throw errorsCategory.notFoundError();
+                    return [2 /*return*/, books.rows];
+            }
+        });
+    });
+}
+function takeBook(_a) {
+    var userId = _a.userId, bookId = _a.bookId;
+    return __awaiter(this, void 0, void 0, function () {
+        var book;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, bookRepositories.findById({ bookId: bookId })];
+                case 1:
+                    book = (_b.sent()).rows[0];
+                    if (!book)
+                        throw errorsCategory.notFoundError();
+                    if (!book.available)
+                        throw errorsCategory.conflictError("Book not available");
+                    return [4 /*yield*/, bookRepositories.updateStatusBook({ status: true, bookId: bookId })];
+                case 2:
+                    _b.sent();
+                    return [4 /*yield*/, bookRepositories.takeBook({ userId: userId, bookId: bookId })];
+                case 3:
+                    _b.sent();
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function findAllMyBooks(_a) {
+    var userId = _a.userId;
+    return __awaiter(this, void 0, void 0, function () {
+        var books;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, bookRepositories.findAllMyBooks({ userId: userId })];
+                case 1:
+                    books = _b.sent();
+                    return [2 /*return*/, books.rows];
+            }
+        });
+    });
+}
+export default {
+    create: create,
+    findAll: findAll,
+    takeBook: takeBook,
+    findAllMyBooks: findAllMyBooks,
+};

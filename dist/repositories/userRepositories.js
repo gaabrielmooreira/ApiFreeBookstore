@@ -34,44 +34,42 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import errorsCategory from "../errors/index.js";
-import jwt from "jsonwebtoken";
-import dotenv from 'dotenv';
-import userRepositories from "../repositories/userRepositories.js";
-dotenv.config();
-export function authValidate(req, _res, next) {
+import connectionDb from "../config/database.js";
+function create(_a) {
+    var name = _a.name, email = _a.email, password = _a.password;
     return __awaiter(this, void 0, void 0, function () {
-        var authHeader, parts, schema, token, userId, rowCount, err_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    authHeader = req.headers.authorization;
-                    if (!authHeader)
-                        throw errorsCategory.unauthorizedError();
-                    parts = authHeader.split(" ");
-                    if (parts.length !== 2)
-                        throw errorsCategory.unauthorizedError();
-                    schema = parts[0], token = parts[1];
-                    if (schema !== 'Bearer')
-                        throw errorsCategory.unauthorizedError();
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    userId = jwt.verify(token, process.env.SECRET_KEY).userId;
-                    return [4 /*yield*/, userRepositories.findById({ id: userId })];
-                case 2:
-                    rowCount = (_a.sent()).rowCount;
-                    if (!rowCount)
-                        throw errorsCategory.unauthorizedError();
-                    req.userId = userId;
-                    next();
-                    return [3 /*break*/, 4];
-                case 3:
-                    err_1 = _a.sent();
-                    next(err_1);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, connectionDb.query("\n      INSERT INTO users (name, email, password)\n      VALUES ($1, $2, $3);\n    ", [name, email, password])];
+                case 1: return [2 /*return*/, _b.sent()];
             }
         });
     });
 }
+function findByEmail(_a) {
+    var email = _a.email;
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, connectionDb.query("\n      SELECT * FROM users WHERE email = $1;\n    ", [email])];
+                case 1: return [2 /*return*/, _b.sent()];
+            }
+        });
+    });
+}
+function findById(_a) {
+    var id = _a.id;
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, connectionDb.query("\n      SELECT * FROM users WHERE id = $1;\n    ", [id])];
+                case 1: return [2 /*return*/, _b.sent()];
+            }
+        });
+    });
+}
+export default {
+    create: create,
+    findByEmail: findByEmail,
+    findById: findById,
+};

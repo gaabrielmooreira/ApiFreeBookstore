@@ -1,7 +1,10 @@
+import 'express-async-errors';
 import express from 'express';
 import routes from './routes/index.js';
+import { handleApplicationErrors } from './middlewares/handleApplicationErrors.js';
 var app = express();
 var PORT = 5000;
 app.use(express.json());
 app.use(routes);
+app.use(handleApplicationErrors);
 app.listen(PORT, function () { return console.log("Server is running in port ".concat(PORT)); });

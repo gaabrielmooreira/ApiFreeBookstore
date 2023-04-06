@@ -1,4 +1,4 @@
-export function handleApplicationErrors(err, req, res, next) {
+export function handleApplicationErrors(err, _req, res, _next) {
     if (err.name === "ConflictError" || err.name === "DuplicatedEmailError") {
         return res
             .status(409)

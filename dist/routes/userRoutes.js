@@ -1,8 +1,8 @@
 import { Router } from "express";
-import usersController from "../controllers/usersController.js";
+import userControllers from "../controllers/userControllers.js";
 import { validateSchema } from "../middlewares/validatorSchemaMiddleware.js";
-import { signInSchema, signUpSchema } from "../schemas/usersSchema.js";
+import { signInSchema, signUpSchema } from "../schemas/userSchemas.js";
 var userRoutes = Router();
-userRoutes.post("/signup", validateSchema(signUpSchema), usersController.create);
-userRoutes.post("/signin", validateSchema(signInSchema), usersController.signin);
+userRoutes.post("/signup", validateSchema(signUpSchema), userControllers.create);
+userRoutes.post("/signin", validateSchema(signInSchema), userControllers.signIn);
 export default userRoutes;

@@ -6,7 +6,7 @@ function conflictError(message) {
 }
 function duplicatedEmailError() {
     return {
-        name: "UnprocessableEntity",
+        name: "DuplicatedEmailError",
         message: "Email is already in use."
     };
 }
