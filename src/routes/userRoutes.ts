@@ -6,6 +6,6 @@ import { signInSchema, signUpSchema } from "../schemas/userSchemas.js";
 const userRoutes: Router = Router();
 
 userRoutes.post("/signup", validateSchema(signUpSchema), userControllers.create);
-userRoutes.post("/signin", validateSchema(signInSchema), userControllers.signin);
+userRoutes.post("/signin", validateSchema(signInSchema), userControllers.signIn);
 
 export default userRoutes;

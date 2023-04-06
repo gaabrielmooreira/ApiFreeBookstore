@@ -9,12 +9,12 @@ function conflictError(message: string): ApplicationError {
 
 function duplicatedEmailError(): ApplicationError {
   return {
-    name: "UnprocessableEntity",
+    name: "DuplicatedEmailError",
     message: "Email is already in use."
   }
 }
 
-function unauthorizedError(): ApplicationError{
+function unauthorizedError(): ApplicationError {
   return {
     name: "UnauthorizedError",
     message: "You must be signed in to continue"

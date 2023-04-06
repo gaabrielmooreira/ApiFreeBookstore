@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { AplicationInvalidDataError, ApplicationError } from "../protocols/protocols";
+import { ApplicationError } from "../protocols/protocols";
 
-export function handleApplicationErrors(err: ApplicationError, req: Request, res: Response, next: NextFunction) {
+export function handleApplicationErrors(err: ApplicationError | Error, _req: Request, res: Response, _next: NextFunction) {
   if (err.name === "ConflictError" || err.name === "DuplicatedEmailError") {
     return res
       .status(409)
